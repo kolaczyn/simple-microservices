@@ -12,7 +12,7 @@
     }).then(res => res.json()).then(data => {
         const message = data.message;
         const span = document.getElementById('current-message');
-        span.innerHTML = message;
+        span.textContent = message;
     })
 
 </script>
