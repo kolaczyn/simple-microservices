@@ -1,16 +1,25 @@
 import express from 'express'
+import cors from 'cors'
 import { sendMessage } from './sendMessage'
 import { fireAndForget } from './fireAndForget'
 
-const log = (message: string) => {
-  console.log(`[${new Date().toISOString()}, producer] ${message}`)
-}
-
 const app = express()
 
-app.get('/:name', async (req, res) => {
+export let welcomeMessage = 'NOTHING YET'
+
+app.use(express.static('src/producer/public'))
+app.options('*', cors()) // include before other routes
+
+app.get('/message', (req, res) => {
+  res.send({
+    message: welcomeMessage,
+  })
+})
+
+// not semantic rest, what whatever :p
+app.get('/send-message/:name', async (req, res) => {
   const name = req.params.name
-  log('got root')
+  welcomeMessage = name
   fireAndForget(() => sendMessage(name))
   res.send(`Sending message: ${name}`)
 })

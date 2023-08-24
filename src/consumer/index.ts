@@ -1,17 +1,18 @@
 import express from 'express'
-import { listener, listOfReceivedMessages } from './listener'
-
-const log = (message: string) => {
-  console.log(`[${new Date().toISOString()}, consumer] ${message}`)
-}
+import { listener, welcomeMessage } from './listener'
+import cors from 'cors'
 
 listener()
 
 const app = express()
 
-app.get('/', (req, res) => {
-  log('got root')
-  res.send(`hello from consumer ${listOfReceivedMessages}`)
+app.use(express.static('src/consumer/public'))
+app.options('*', cors()) // include before other routes
+
+app.get('/message', (req, res) => {
+  res.send({
+    message: welcomeMessage,
+  })
 })
 
 const port = 3000

@@ -1,0 +1,18 @@
+<h1>hello from consumer</h1>
+<div>
+    <h2>Current Message: </h2>
+    <h2 id="current-message">LOADING</h2>
+</div>
+
+<a href="http://localhost:4000">Go to producer</a>
+
+<script>
+    fetch('http://localhost:3000/message', {
+        method: 'GET',
+    }).then(res => res.json()).then(data => {
+        const message = data.message;
+        const span = document.getElementById('current-message');
+        span.innerHTML = message;
+    })
+
+</script>

@@ -1,0 +1,35 @@
+<h1>hello from producer</h1>
+<div>
+    <h2>Current Message: </h2>
+<h2 id="current-message">LOADING</h2>
+</div>
+<label for="input">Set welcome message</label>
+<input id="input"/>
+<button id="send-btn">Send</button>
+
+<a href="http://localhost:3000">Go to consumer</a>
+
+<script>
+    const input = document.getElementById('input');
+    const button = document.getElementById('send-btn');
+
+    button.addEventListener('click', () => {
+        const message = input.value;
+        fetch(`http://localhost:4000/send-message/${message}`, {
+            method: 'GET',
+        })
+
+        setTimeout(() => {
+            window.location.reload();
+        }, 500)
+    })
+
+    fetch('http://localhost:4000/message', {
+        method: 'GET',
+    }).then(res => res.json()).then(data => {
+        const message = data.message;
+        const span = document.getElementById('current-message');
+        span.innerHTML = message;
+    })
+
+</script>

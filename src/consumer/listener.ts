@@ -2,7 +2,7 @@ import amqplib from 'amqplib'
 
 const AMQP_URL = 'amqp://localhost:5673'
 
-export const listOfReceivedMessages: string[] = []
+export let welcomeMessage = 'NOTHING YET'
 
 const extractMessage = (msg: amqplib.ConsumeMessage | null) => {
   if (!msg) {
@@ -21,7 +21,7 @@ const processMessage = async (msg: amqplib.ConsumeMessage | null) => {
   const name = extractMessage(msg)
 
   if (name) {
-    listOfReceivedMessages.push(name)
+    welcomeMessage = name
   }
 }
 
