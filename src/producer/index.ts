@@ -2,25 +2,39 @@ import express from 'express'
 import cors from 'cors'
 import { sendMessage } from './sendMessage'
 import { fireAndForget } from './fireAndForget'
+import { knex } from './db'
 
 const app = express()
-
-export let welcomeMessage = 'NOTHING YET'
 
 app.use(express.static('src/producer/public'))
 app.options('*', cors()) // include before other routes
 app.use(express.json())
 
-app.get('/welcome-message', (req, res) => {
+type WelcomeMessage = {
+  id: number
+  message: string
+}
+
+app.get('/welcome-message', async (req, res) => {
+  const selectedRows = await knex('welcome_messages').select<WelcomeMessage[]>('*').first()
+
+  if (!selectedRows) {
+    return res.sendStatus(404)
+  }
+
   res.send({
-    message: welcomeMessage,
+    message: selectedRows.message,
   })
 })
 
 app.post('/welcome-message', async (req, res) => {
   const message = req.body.message
-  welcomeMessage = message
   fireAndForget(() => sendMessage(message))
+  const id = Math.ceil(Math.random() * 1000)
+
+  await knex('welcome_messages').del()
+  await knex('welcome_messages').insert({ message, id })
+
   res.send(`Sending message: ${message}`)
 })
 
