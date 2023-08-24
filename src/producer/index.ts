@@ -9,19 +9,19 @@ export let welcomeMessage = 'NOTHING YET'
 
 app.use(express.static('src/producer/public'))
 app.options('*', cors()) // include before other routes
+app.use(express.json())
 
-app.get('/message', (req, res) => {
+app.get('/welcome-message', (req, res) => {
   res.send({
     message: welcomeMessage,
   })
 })
 
-// not semantic rest, what whatever :p
-app.get('/send-message/:name', async (req, res) => {
-  const name = req.params.name
-  welcomeMessage = name
-  fireAndForget(() => sendMessage(name))
-  res.send(`Sending message: ${name}`)
+app.post('/welcome-message', async (req, res) => {
+  const message = req.body.message
+  welcomeMessage = message
+  fireAndForget(() => sendMessage(message))
+  res.send(`Sending message: ${message}`)
 })
 
 const port = 4000

@@ -15,8 +15,12 @@
 
     button.addEventListener('click', () => {
         const message = input.value;
-        fetch(`http://localhost:4000/send-message/${message}`, {
-            method: 'GET',
+        fetch('http://localhost:4000/welcome-message', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({message})
         })
 
         setTimeout(() => {
@@ -24,12 +28,13 @@
         }, 500)
     })
 
-    fetch('http://localhost:4000/message', {
+    fetch('http://localhost:4000/welcome-message', {
         method: 'GET',
     }).then(res => res.json()).then(data => {
         const message = data.message;
         const span = document.getElementById('current-message');
-        span.innerHTML = message;
+        console.log(message)
+        span.textContent = message;
     })
 
 </script>
