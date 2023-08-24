@@ -24,16 +24,16 @@ app.get('/welcome-message', async (req, res) => {
 
   res.send({
     message: selectedRows.message,
+    id: selectedRows.id,
   })
 })
 
 app.post('/welcome-message', async (req, res) => {
   const message = req.body.message
   fireAndForget(() => sendMessage(message))
-  const id = Math.ceil(Math.random() * 1000)
 
   await knex('welcome_messages').del()
-  await knex('welcome_messages').insert({ message, id })
+  await knex('welcome_messages').insert({ message })
 
   res.send(`Sending message: ${message}`)
 })

@@ -8,6 +8,7 @@
     "start-producer": "ts-node ./src/producer",
     "start-consumer": "ts-node ./src/consumer",
     "migrate": "knex migrate:latest",
+    "migrate-make": "knex migrate:make",
     "format": "prettier -c src",
     "types": "tsc --noEmit",
     "lint": "eslint src",
