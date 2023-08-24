@@ -1,8 +1,8 @@
 {
-  "name": "kolaczyn-typescript-template",
+  "name": "simple-microservices",
   "license": "MIT",
   "author": "Paweł Kołaczyński",
-  "repository": "github:kolaczyn/typescript-template",
+  "repository": "github:kolaczyn/simple-microservices",
   "version": "0.0.0",
   "scripts": {
     "dev": "ts-node-dev src/index.ts",
@@ -10,14 +10,9 @@
     "start": "node dist/index.js",
     "format": "prettier -c src",
     "types": "tsc --noEmit",
-    "lint:check": "eslint src",
-    "lint:fix": "eslint src --fix",
-    "test": "vitest",
-    "test:run": "vitest run",
-    "ci": "run-p -l --aggregate-output format lint:check types test:run",
-    "build": "rimraf dist && tsc",
-    "build:package": "rimraf lib && yarn build:esm",
-    "build:esm": "tsc --module esnext --outDir lib/esm",
+    "lint": "eslint src",
+    "test": "vitest run",
+    "ci": "run-p -l --aggregate-output format lint types",
     "prepare": "husky install"
   },
   "devDependencies": {
@@ -40,19 +35,6 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "files": [
-    "lib"
-  ],
-  "main": "./lib/cjs/index.js",
-  "module": "./lib/umd/index.js",
-  "types": "./lib/esm/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./lib/esm/index.js",
-      "require": "./lib/umd/index.js"
-    }
-  },
-  "sideEffects": false,
   "lint-staged": {
     "src/**/*.ts": [
       "prettier --write",
