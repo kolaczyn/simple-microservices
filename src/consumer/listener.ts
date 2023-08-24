@@ -4,13 +4,25 @@ const AMQP_URL = 'amqp://localhost:5673'
 
 export const listOfReceivedMessages: string[] = []
 
-const processMessage = async (msg: amqplib.ConsumeMessage | null) => {
+const extractMessage = (msg: amqplib.ConsumeMessage | null) => {
   if (!msg) {
-    return
+    return null
   }
 
-  console.log('processing message')
-  listOfReceivedMessages.push(msg.content.toString())
+  const content: unknown = JSON.parse(msg.content.toString())
+
+  if (typeof content === 'object' && content != null && 'name' in content && typeof content.name === 'string') {
+    return content.name
+  }
+  return null
+}
+
+const processMessage = async (msg: amqplib.ConsumeMessage | null) => {
+  const name = extractMessage(msg)
+
+  if (name) {
+    listOfReceivedMessages.push(name)
+  }
 }
 
 export const listener = async () => {
@@ -19,7 +31,6 @@ export const listener = async () => {
   channel.prefetch(10)
   const queue = 'user.sign_up_email'
   process.once('SIGINT', async () => {
-    console.log('got sigint, closing connection')
     await channel.close()
     await connection.close()
     process.exit(0)
@@ -29,7 +40,6 @@ export const listener = async () => {
   await channel.consume(
     queue,
     async msg => {
-      console.log('processing messages')
       await processMessage(msg)
       if (msg) {
         await channel.ack(msg)
@@ -40,5 +50,4 @@ export const listener = async () => {
       consumerTag: 'email_consumer',
     }
   )
-  console.log(' [*] Waiting for messages. To exit press CTRL+C')
 }
