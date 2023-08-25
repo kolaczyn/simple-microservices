@@ -28,7 +28,7 @@ const processMessage = async (msg: amqplib.ConsumeMessage | null) => {
 export const listener = async () => {
   const connection = await amqplib.connect(AMQP_URL, 'heartbeat=60')
   const channel = await connection.createChannel()
-  channel.prefetch(10)
+  await channel.prefetch(10)
   const queue = 'user.sign_up_email'
   process.once('SIGINT', async () => {
     await channel.close()

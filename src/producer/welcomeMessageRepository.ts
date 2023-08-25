@@ -19,8 +19,10 @@ export const welcomeMessageRepository: IWelcomeMessageRepository = {
   },
 
   update: async (message: string) => {
-    await knex(TABLE_WELCOME_MESSAGES).del()
-    await knex(TABLE_WELCOME_MESSAGES).insert({ message })
-    await knex(TABLE_WELCOME_MESSAGES_OUTBOX).insert({ message })
+    await knex.transaction(async trx => {
+      await trx(TABLE_WELCOME_MESSAGES).del()
+      await trx(TABLE_WELCOME_MESSAGES).insert({ message })
+      await trx(TABLE_WELCOME_MESSAGES_OUTBOX).insert({ message })
+    })
   },
 }
