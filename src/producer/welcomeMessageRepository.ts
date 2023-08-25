@@ -1,4 +1,4 @@
-import { IWelcomeMessageRepository, WelcomeMessage } from './types'
+import { IWelcomeMessageRepository, WelcomeMessage, WelcomeMessageOutbox } from './types'
 import { knex } from './db'
 
 const TABLE_WELCOME_MESSAGES = 'welcome_messages'
@@ -17,6 +17,10 @@ export const welcomeMessageRepository: IWelcomeMessageRepository = {
       id: found.id,
     }
   },
+
+  getOutbox: () => knex(TABLE_WELCOME_MESSAGES_OUTBOX).select<WelcomeMessageOutbox[]>('*').where({ sent: false }),
+
+  markAsSent: async (id: number) => knex(TABLE_WELCOME_MESSAGES_OUTBOX).where({ id }).update({ sent: true }),
 
   update: async (message: string) => {
     await knex.transaction(async trx => {
