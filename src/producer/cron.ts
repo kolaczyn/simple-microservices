@@ -1,5 +1,4 @@
 import { knex } from './db'
-import { fireAndForget } from './fireAndForget'
 import { sendMessage } from './sendMessage'
 
 type WelcomeMessageOutbox = {
@@ -16,8 +15,8 @@ export const startCron = () => {
 
     selectedRows.forEach(({ message, id }) => {
       console.log('sending message', message)
-      fireAndForget(() => sendMessage(message))
-      fireAndForget(() => knex('welcome_messages_outbox').where({ id }).update({ sent: true }))
+      sendMessage(message)
+      knex('welcome_messages_outbox').where({ id }).update({ sent: true })
     })
   }, 2000)
 }
